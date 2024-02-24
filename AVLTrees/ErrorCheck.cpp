@@ -20,16 +20,19 @@ bool ErrorCheck::isSpacingValid(std::string line)
        
         return true;
     }
-    
     return false;
 }
-
-bool ErrorCheck::isTypeValid(std::string line)
-{
-    if (line.find(".txt") != string::npos) {
-        return  true;
+    bool ErrorCheck::searchandinsertequal(std::string line, int i)
+    {
+       // vector<string> insertlist;
+       //  vector<string> searchlist;
+       // if (line[1] == 'S')
+       // {
+       //     insertlist.emplace_back("S");
+       // }
+       //  if(line[1] == 'I')
+       //  searchlist.emplace_back("I");
+       return false;
     }
- 
-    
-    return false;
-}
+
+

@@ -15,10 +15,5 @@ public:
 
    bool isTypeValid(std::string line);
    bool isSpacingValid(std::string line);
-   
-
-
-
-
-
+   bool searchandinsertequal(std::string line, int i);
 };
