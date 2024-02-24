@@ -51,16 +51,18 @@ using namespace std;
 	
 	}
 
-	void BSTree::insertNode(BSTree::Node*& root,int data) {
+	void BSTree::insertNode(BSTree::Node*& root, int data) {
 		//if root is empty, create a new node and set it as the root
 		if (root == nullptr)
 		{
-			cout<< "Tree has no root for inserting!" << endl<< "attempting to create tree root"<<endl;
+			cout << "Tree has no root for inserting!" << endl << "attempting to create tree root" << endl;
 
-			
+
 			root = new BSTree::Node(data);
-			cout<<"root created"<<endl;
-			// return;
+			cout << "root created" << endl;
+
+
+
 		}
 		else {
 			BSTree::Node* curr = root;
@@ -68,57 +70,89 @@ using namespace std;
 			{
 				if (curr->value > data)
 				{
-					
-					if (curr->right == nullptr) {
-						
-					curr->right = new BSTree::Node(data);
-					operation++;
-						cout<<"inserted node"<<endl;
+					if (curr->left == nullptr) {
 
-						return;
-					}
-					else {
-						curr = curr->right;
+						curr->left = new BSTree::Node(data);
 						operation++;
+						cout << "inserted node" << endl;
+
+
+
+
+
+
+						break;
 					}
-				
-					
+					curr = curr->left;
+					operation++;
 				}
+					 
+					
+					
+
 				if (curr->value < data)
 				{
-					if (curr->left == nullptr) {
-						curr->left = new BSTree::Node(data);
+					if (curr->right == nullptr) {
+						curr->right = new BSTree::Node(data);
 						operation++;
 
 
-						cout<<"inserted node"<<endl;
+						cout << "inserted node" << endl;
 
-						return;
+						break;
 					}
+					curr = curr->right;
+
+
 					
-					
-						curr = curr->left;
-					
-						operation++;
-					
+				
+
+
+					operation++;
 
 				}
-				else if(data == curr->value) {
-					if(curr->right == nullptr)
-					{
-						curr->left = new BSTree::Node(data);
 
+				// if (data == curr->value) {
+				// 	if (curr->twin == nullptr)
+				// 	{
+				// 		curr->twin = new BSTree::Node(data);
+				//
+				// 	}
+					curr->height++;
+
+					int balanceFactor = BalanceNum(curr);
+
+					if (balanceFactor > 1) {
+						if (data < curr->left->value && curr->left != nullptr) {
+							curr = rightRotate(curr);
+						}
+						else if (data > curr->left->value && curr->left != nullptr) {
+							curr->left = leftRotate(curr->left );
+							curr = rightRotate(curr);
+						}
 					}
-					else
-					{
-						curr = curr->left;
+					if (balanceFactor < -1) {
+						if (data > curr->right->value && curr->right != nullptr) {
+							curr = leftRotate(curr);
+						}
+						else if (data < curr->right->value &&curr->right != nullptr) {
+							curr->right = rightRotate(curr->right);
+							curr = leftRotate(curr);
+						}
 					}
-    }
 				
+				}
+
+
 			}
-			
+
 		}
-}
+	
+
+		
+				
+		
+	
 
 bool BSTree::isTreeEmpty(Node* root)
 {
@@ -206,11 +240,12 @@ BSTree::Node* BSTree::searchTree(Node* node, int key)
 //add main
 int main()
 	{
-		// std::string name;
-		// std::cout << "Enter file name: ";
-		
+		 std::string name;
+		 std::cout << "Enter file name: ";
+		 std::cin >> name;
 		ifstream file;
-		file.open("C:\\Users\\aamir_3h2utvj\\Documents\\SoftDev\\CIS 3501\\Project 1\\RequiredTests\\80search50.txt");
+
+		file.open(name);
 		if (!file.is_open()) {
 			std::cout << "File cannot be opened. Please try again.\n";
 			return 0;
@@ -267,91 +302,23 @@ int main()
 			
 		}
 		
-		if(searchlist.size() == insertlist.size() && searchlist.size() > 0)
+		if(!insertlist.empty())
 		{
-			cout<<"number of searches and inserts are the same!"<<endl;
-			return 0;
-		}
-
-		// int itr = 0;
-		// while(itr < insertlist.size() && itr < searchlist.size())
-		// {
-			
-			// cout << "Read: " << line << endl;
-			// if (file.eof()) {
-				// cout << "End of file reached." << endl;
-			// } 
-		
-			
-			// if(line == "S")
-			// {
-				// if(mytree.root != nullptr)
-					
-				// {
-					// file>>num;
-					// mytree.searchTree(mytree.root,std::stoi(num));	
-				// }
-				// else
-				// {
-					// cout<<"Cant search a empty tree!"<<endl;
-				// }
-				// exit;
-				// continue;
-
-					
-			// }
-			// else if(line == "D")
-			// {
-				// if(mytree.root != nullptr)
-				// {
-					// mytree.deleteNode( std::stoi(num), mytree.root);
-				// }
-				// else
-				// {
-					// cout<<"Cant search a empty tree!";
-					
-				// }
-				// exit;			}
-		// 	 else if(line == "I")
-		// 	{
-		// 	 	cout<<"line starts with I, attempting to insert";
-		// 	 	num = line.substr(0,line.length());
-		// 		file>>num;	
-		// 	 	
-		// 		mytree.insertNode(mytree.root, std::stoi(num));
-		// 		
-		// 		// tree.searchTree();
-		// 	 	exit;
-		// 	}
-		//
-		// 	else
-		// 	{
-		// 		mytree.insertNode(mytree.root, std::stoi(line));
-		// 		exit;
-		// 	}
-		// 	itr++
-		//
-		// }
-		if(insertlist.size() > 0)
-		{
-			for (int itr = 0; itr < insertlist.size(); itr++)
-			{
-				mytree.insertNode(mytree.root ,insertlist.at(itr));
-				// cout<<"A";
+			for (const auto& value : insertlist) {
+				mytree.insertNode(mytree.root, value);
 			}
+		}
+		
+		if(!searchlist.empty())
+		{
+			for (const auto& value : searchlist) {
+				if (!mytree.searchTree(mytree.root, value)) {
+					cout << "Value " << value << " not found in tree." << endl;
+				}
+			}
+		
+		}
 	
-		}
-		
-		if(searchlist.size() > 0)
-		{
-			for (int itr : searchlist)
-			{
-				mytree.searchTree(mytree.root, itr);
-				// cout<<"A";
-			}
-		}
-
-		
 		
 		mytree.callprint(mytree);
 		
